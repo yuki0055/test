@@ -1,0 +1,618 @@
+HEAD
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>田中悠貴</title>
+  <style>
+    :root {
+      --main-bg: #f7fafd;
+      --card-bg: #fff;
+      --card-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      --main-color: #2c3e50;
+      --accent: #3498db;
+      --border: #e3e7ea;
+      --muted: #7f8c8d;
+      --hover: #eaf6ff;
+      --keyword-hover: #fff0b3;
+      --transition: 0.25s cubic-bezier(.4,0,.2,1);
+    }
+    body {
+      background: var(--main-bg);
+      color: var(--main-color);
+      font-family: 'Segoe UI', 'Helvetica Neue', Arial, 'Meiryo', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .auth-overlay {
+      position: fixed;
+      z-index: 9999;
+      inset: 0;
+      background: rgba(247,250,253,0.98);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity var(--transition);
+    }
+    .auth-box {
+      background: var(--card-bg);
+      box-shadow: var(--card-shadow);
+      border-radius: 14px;
+      padding: 2.5rem 2.5rem 2rem 2.5rem;
+      min-width: 320px;
+      max-width: 90vw;
+      text-align: center;
+      border: 1px solid var(--border);
+      animation: fadeIn .7s;
+    }
+    .auth-box h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1.2rem;
+      letter-spacing: 0.06em;
+    }
+    .auth-box label {
+      display: block;
+      margin: 1.2rem 0 0.4rem 0;
+      font-size: 1rem;
+      color: var(--muted);
+    }
+    .auth-box input[type="password"] {
+      padding: 0.6rem 1rem;
+      font-size: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: 1rem;
+      background: #f8fafc;
+      transition: border-color var(--transition);
+    }
+    .auth-box input[type="password"]:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .auth-box .robot-check {
+      margin: 1.2rem 0 1.2rem 0;
+      text-align: left;
+      font-size: 1rem;
+    }
+    .auth-box .robot-check label {
+      margin-right: 1.5rem;
+      font-size: 1rem;
+      color: var(--main-color);
+      display: inline-block;
+    }
+    .auth-box button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.7rem 2.2rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: background var(--transition);
+    }
+    .auth-box button:disabled {
+      background: #b0cbe7;
+      cursor: not-allowed;
+    }
+    .auth-error {
+      color: #e74c3c;
+      margin-top: 0.7rem;
+      font-size: 0.97rem;
+      min-height: 1.2em;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(16px);}
+      to { opacity: 1; transform: none;}
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 36px auto 36px auto;
+      padding: 0 1.2rem;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .header-title {
+      font-size: 2.3rem;
+      font-weight: bold;
+      letter-spacing: 0.12em;
+      color: var(--main-color);
+      margin: 0.2em 0 0.1em 0;
+    }
+    .header-photo {
+      width: 110px;
+      height: 110px;
+      background: #e3e7ea;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #b0b7bd;
+      font-size: 1.1rem;
+      font-weight: 500;
+      border: 2px dashed #c1c7cc;
+      margin-left: 1.5rem;
+      flex-shrink: 0;
+    }
+    .subtitle {
+      font-size: 1.2rem;
+      color: var(--accent);
+      letter-spacing: 0.11em;
+      margin-top: 0.4em;
+      font-weight: 500;
+    }
+    .lead {
+      font-size: 1.07rem;
+      color: var(--muted);
+      margin-bottom: 1.2em;
+      margin-top: 0.2em;
+    }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      margin: 1.4em 0 2.2em 0;
+    }
+    .nav-links a {
+      color: var(--main-color);
+      font-size: 1rem;
+      font-weight: 500;
+      text-decoration: none;
+      padding: 0.4em 1.1em;
+      border-radius: 5px;
+      transition: background var(--transition), color var(--transition);
+      background: transparent;
+    }
+    .nav-links a:hover, .nav-links a:focus {
+      color: var(--accent);
+      background: var(--hover);
+    }
+
+    .card-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2.2rem;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 13px;
+      box-shadow: var(--card-shadow);
+      padding: 2.1rem 2rem 1.5rem 2rem;
+      border: 1px solid var(--border);
+      margin-bottom: 0.2rem;
+      transition: transform 0.18s cubic-bezier(.4,0,.2,1), box-shadow var(--transition);
+      position: relative;
+      overflow: hidden;
+      animation: fadeIn 0.8s;
+    }
+    .card:hover {
+      transform: translateY(-4px) scale(1.012);
+      box-shadow: 0 8px 32px rgba(52,152,219,0.08);
+    }
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--main-color);
+      margin-bottom: 0.7em;
+      letter-spacing: 0.07em;
+    }
+    .card-content {
+      font-size: 1.05rem;
+      color: var(--main-color);
+      line-height: 1.7;
+    }
+    .card-links {
+      margin-top: 0.7em;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2em;
+    }
+    .card-links a {
+      color: var(--accent);
+      text-decoration: underline;
+      font-size: 0.99rem;
+      transition: color var(--transition);
+    }
+    .card-links a:hover, .card-links a:focus {
+      color: #176ba0;
+    }
+    .keywords {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8em;
+      margin: 0.8em 0 0.7em 0;
+    }
+    .keyword {
+      background: #f0f4fa;
+      color: #2c3e50;
+      padding: 0.23em 0.9em;
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: background var(--transition), color var(--transition);
+      cursor: pointer;
+      border: 1px solid #e3e7ea;
+      user-select: none;
+    }
+    .keyword:hover, .keyword:focus {
+      background: var(--keyword-hover);
+      color: #b27d00;
+    }
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5em;
+      margin-bottom: 1em;
+    }
+    .timeline-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8em;
+      font-size: 1rem;
+      border-left: 3px solid var(--accent);
+      padding-left: 1em;
+      margin-bottom: 0.2em;
+      background: #f9fbfd;
+      border-radius: 6px;
+      min-height: 2.2em;
+    }
+    .timeline-date {
+      font-weight: 500;
+      color: var(--accent);
+      min-width: 6.2em;
+      font-size: 0.98rem;
+    }
+    .timeline-desc {
+      color: var(--main-color);
+      font-size: 0.98rem;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .expandable-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8em;
+    }
+    .expandable-item {
+      background: #f5f8fa;
+      border-radius: 7px;
+      padding: 0.7em 1em;
+      cursor: pointer;
+      position: relative;
+      transition: background var(--transition);
+      font-size: 1.02rem;
+      border: 1px solid #e3e7ea;
+      color: var(--main-color);
+    }
+    .expandable-item:hover, .expandable-item:focus {
+      background: #eaf6ff;
+    }
+    .expandable-content {
+      display: none;
+      background: #fff;
+      border-radius: 0 0 7px 7px;
+      padding: 1em 1.1em 1em 1.1em;
+      margin-top: -0.2em;
+      border: 1px solid #e3e7ea;
+      border-top: none;
+      color: #444;
+      font-size: 0.98rem;
+      line-height: 1.75;
+      animation: fadeIn 0.5s;
+    }
+    .expandable-item.active + .expandable-content {
+      display: block;
+    }
+    .card-img-placeholder {
+      width: 100%;
+      height: 180px;
+      background: #e3e7ea;
+      border-radius: 8px 8px 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #b0b7bd;
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin-bottom: 1em;
+    }
+    .sns-list {
+      display: flex;
+      gap: 2.2em;
+      margin-top: 1.2em;
+      flex-wrap: wrap;
+    }
+    .sns-link {
+      color: var(--accent);
+      font-size: 1.1rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: color var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+    .sns-link:hover, .sns-link:focus {
+      color: #176ba0;
+      text-decoration: underline;
+    }
+    @media (max-width: 900px) {
+      .container { max-width: 99vw; }
+      .header { flex-direction: column; align-items: flex-start; gap: 0.7rem;}
+      .header-photo { margin-left: 0; margin-top: 1.1em;}
+    }
+    @media (max-width: 600px) {
+      .container { padding: 0 0.1rem;}
+      .header-title { font-size: 1.5rem;}
+      .card { padding: 1.2rem 0.7rem 1rem 0.7rem;}
+      .card-title { font-size: 1.1rem;}
+      .subtitle { font-size: 1rem;}
+    }
+  </style>
+</head>
+<body>
+  <!-- 認証オーバーレイ -->
+  <div class="auth-overlay" id="auth-overlay">
+    <form class="auth-box" id="auth-form" autocomplete="off" onsubmit="return false;">
+      <h2>パスワード認証</h2>
+      <label for="pw">パスワードを入力してください</label>
+      <input type="password" id="pw" name="pw" placeholder="パスワード" required autocomplete="new-password">
+      <div class="robot-check">
+        <span>私はロボットではありません</span><br>
+        <label><input type="radio" name="robot" value="yes"> はい</label>
+        <label><input type="radio" name="robot" value="no"> いいえ</label>
+      </div>
+      <button type="submit" id="auth-btn" disabled>認証</button>
+      <div class="auth-error" id="auth-error"></div>
+    </form>
+  </div>
+
+  <div class="container" id="main-content" style="display:none;">
+    <!-- ヘッダー -->
+    <div class="header">
+      <div>
+        <div class="header-title">田中悠貴</div>
+        <div class="subtitle">YUKI TANAKA</div>
+        <div class="lead">日本大学 大学院理工学研究科 博士前期電子工学科専攻</div>
+      </div>
+      <div class="header-photo">顔写真<br>（後で埋め込み）</div>
+    </div>
+    <!-- ナビゲーション -->
+    <nav class="nav-links">
+      <a href="#card1">概要</a>
+      <a href="#card2">研究分野・キーワード</a>
+      <a href="#card3">学歴・論文</a>
+      <a href="#card4">実績・経験・資格・趣味</a>
+      <a href="#card5">SNS</a>
+    </nav>
+    <!-- カードリスト -->
+    <div class="card-list">
+      <!-- 1つ目のカード -->
+      <section class="card simple" id="card1">
+        <div class="card-title">概要</div>
+        <div class="card-content">
+          2027年3月日本大学 大学院理工学研究科 博士前期電子工学科専攻卒業予定．
+          <div class="card-links">
+            <a href="http://chip.ecs.cst.nihon-u.ac.jp/index.html" target="_blank" rel="noopener">研究室</a>
+            <a href="https://www.cst.nihon-u.ac.jp/graduate_school/course/seika" target="_blank" rel="noopener">専攻</a>
+          </div>
+        </div>
+      </section>
+      <!-- 2つ目のカード -->
+      <section class="card simple" id="card2">
+        <div class="card-title">研究分野・キーワード</div>
+        <div class="card-content">
+          <div class="keywords">
+            <span class="keyword">計測</span>
+            <span class="keyword">薄膜</span>
+            <span class="keyword">ガスセンサ</span>
+            <span class="keyword">CuPc</span>
+          </div>
+          <div style="margin-top:0.7em;">
+            <strong>研究分野：</strong>銅フタロシアニンを用いたガス判別に対する検討
+          </div>
+          <div style="margin-top:0.7em;">
+            <strong>研究：</strong>[パワポ埋め込み予定]<br>
+            <span style="color:#b0b7bd;font-size:0.97em;">※スライド切替・拡大表示機能は後日実装</span>
+          </div>
+        </div>
+      </section>
+      <!-- 3つ目のカード -->
+      <section class="card simple" id="card3">
+        <div class="card-title">学歴・論文</div>
+        <div class="card-content">
+          <div style="margin-bottom:1em;">
+            <strong>学歴</strong>
+            <div class="timeline">
+              <div class="timeline-item">
+                <span class="timeline-date">2025年7月現在</span>
+                <span class="timeline-desc">日本大学 大学院理工学研究科 博士前期電子工学科専攻</span>
+              </div>
+              <div class="timeline-item">
+                <span class="timeline-date">2023年4月-2025年3月</span>
+                <span class="timeline-desc">日本大学 理工学部電子工学科</span>
+              </div>
+              <div class="timeline-item">
+                <span class="timeline-date">2021年4月-2023年3月</span>
+                <span class="timeline-desc">日本大学 短期大学部 ものづくりサイエンス総合学科</span>
+              </div>
+              <div class="timeline-item">
+                <span class="timeline-date">2018年4月-2021年3月</span>
+                <span class="timeline-desc">川崎市立幸高等学校</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <strong>論文：</strong>
+            <a href="https://www.ieee-jp.org/section/tokyo/chapter/IM-09/IEEE_IM-09_2024_02_program2.pdf" target="_blank" rel="noopener">
+              銅フタロシアニンを用いたトリメチルアミンガス検知に対する一検討
+            </a>
+          </div>
+        </div>
+      </section>
+      <!-- 4つ目のカード -->
+      <section class="card simple" id="card4">
+        <div class="card-title">実績・経験・資格・趣味</div>
+        <div class="card-content">
+          <div style="margin-bottom:1.2em;">
+            <strong>実績・経験</strong>
+            <div class="expandable-list">
+              <div class="expandable-item" tabindex="0">ボランティア：大学生主体の塾</div>
+              <div class="expandable-content">
+                大学生主体の塾ボランティア活動に2年間携わりました。月2回、経済的な理由などから塾に通えない生徒を対象に学習支援を行い、人狼ゲームなども取り入れて生徒との距離を縮めました。信頼関係を築き、希望する高校に合格できたことが大きなやりがいとなりました。教えることの楽しさや責任感、相手の立場に立って考える力、コミュニケーション能力も成長しました。
+              </div>
+              <div class="expandable-item" tabindex="0">アルバイト：家庭教師</div>
+              <div class="expandable-content">
+                小学3年生、小学4年生、中学3年生の3家庭を担当。志望校合格や勉強習慣の定着を目標に保護者と連携し、特に中学3年生の生徒は数学の点数を20点から75点まで向上させて志望校に合格。社会貢献と自己成長を両立する姿勢を大切にしています。
+              </div>
+              <div class="expandable-item" tabindex="0">IEEE主催 2024年度第2回「学生研究発表会」</div>
+              <div class="expandable-content">
+                大学4年生時に「銅フタロシアニンを用いたトリメチルアミンガス検知に対する一検討」というタイトルで外部発表を行いました。
+              </div>
+            </div>
+            <div class="card-img-placeholder" style="margin-top:0.7em;">実績・経験の写真（後で埋め込み）</div>
+          </div>
+          <div style="margin-bottom:1.2em;">
+            <strong>資格</strong>
+            <ul style="margin:0.7em 0 0.2em 1.2em; padding:0; color:#444; font-size:0.99em;">
+              <li>2005年 実用英語技能検定 準2級</li>
+              <li>2006年 実用数学技能検定 準2級</li>
+              <li>2007年 ビジネス文書実務検定試験 2級</li>
+              <li>2008年 普通自動車第一種運転免許（AT限定）</li>
+            </ul>
+          </div>
+          <div>
+            <strong>趣味</strong>
+            <div class="expandable-list">
+              <div class="expandable-item" tabindex="0">料理</div>
+              <div class="expandable-content">
+                2021年2月：Instagramアカウント開設<br>
+                2025年4月：YouTubeチャンネル開設<br>
+                料理写真や動画を投稿し、YouTubeでは開設1カ月で登録者150人、3カ月で500人を達成。PDCAサイクルの実践や情報発信力を身につけました。
+              </div>
+              <div class="expandable-item" tabindex="0">運動</div>
+              <div class="expandable-content">
+                健康維持と生活習慣病予防のため、ジョギングや散歩、ダンスを習慣化。友人と協力しながら目標に取り組む工夫力や継続力、健康意識の高さを身につけました。
+              </div>
+            </div>
+            <div class="card-img-placeholder" style="margin-top:0.7em;">趣味の写真（後で埋め込み）</div>
+          </div>
+        </div>
+      </section>
+      <!-- 5つ目のカード -->
+      <section class="card simple" id="card5">
+        <div class="card-title">SNS</div>
+        <div class="card-content">
+          <div class="sns-list">
+            <a class="sns-link" href="https://youtube.com/@ouchigohan_music" target="_blank" rel="noopener">
+              <span>▶</span> YouTube
+            </a>
+            <a class="sns-link" href="https://www.instagram.com/ouchigohan_music" target="_blank" rel="noopener">
+              <span>📷</span> Instagram
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <script>
+    // 認証ロジック
+    const authOverlay = document.getElementById('auth-overlay');
+    const authForm = document.getElementById('auth-form');
+    const pwInput = document.getElementById('pw');
+    const authBtn = document.getElementById('auth-btn');
+    const authError = document.getElementById('auth-error');
+    const mainContent = document.getElementById('main-content');
+    let robotChecked = false, robotValue = null;
+
+    // ロボット認証ラジオボタン取得
+    const robotRadios = authForm.querySelectorAll('input[name="robot"]');
+    robotRadios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        robotChecked = true;
+        robotValue = radio.value;
+        checkAuthReady();
+      });
+    });
+    pwInput.addEventListener('input', checkAuthReady);
+
+    function checkAuthReady() {
+      if (pwInput.value && robotChecked) {
+        authBtn.disabled = false;
+      } else {
+        authBtn.disabled = true;
+      }
+    }
+    authForm.addEventListener('submit', function() {
+      authError.textContent = '';
+      if (pwInput.value !== '404') {
+        authError.textContent = 'パスワードが正しくありません。';
+        return;
+      }
+      if (robotValue !== 'yes') {
+        authError.textContent = '「はい」を選択してください。';
+        return;
+      }
+      // 認証成功
+      authOverlay.style.display = 'none';
+      mainContent.style.display = '';
+      setTimeout(() => { window.scrollTo(0,0); }, 30);
+    });
+
+    // ナビゲーション：スムーズスクロール
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href.startsWith('#')) {
+          e.preventDefault();
+          const target = document.querySelector(href);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      });
+    });
+
+    // キーワード hover
+    document.querySelectorAll('.keyword').forEach(kw => {
+      kw.addEventListener('mouseenter', function() {
+        this.style.background = 'var(--accent)';
+        this.style.color = '#fff';
+      });
+      kw.addEventListener('mouseleave', function() {
+        this.style.background = '#f0f4fa';
+        this.style.color = '#2c3e50';
+      });
+    });
+
+    // 実績・趣味 expandable
+    document.querySelectorAll('.expandable-item').forEach((item, idx, arr) => {
+      item.addEventListener('click', function() {
+        // 他を閉じる
+        arr.forEach((el, i) => {
+          if (i !== idx) el.classList.remove('active');
+        });
+        // 開閉
+        this.classList.toggle('active');
+      });
+      item.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          this.click();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
